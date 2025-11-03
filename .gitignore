@@ -1,0 +1,101 @@
+# ===============================
+# Global Node / Angular / Docker Ignore
+# ===============================
+
+# Dependency directories
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+tmp/
+temp/
+.cache/
+coverage/
+.nyc_output/
+
+# Environment files
+.env
+.env.*.local
+*.local.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# IDEs / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+*.DS_Store
+Thumbs.db
+
+# OS Files
+.DS_Store
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# Angular specific
+/frontend/.angular/
+/frontend/.angular/cache/
+frontend/.angular/cache/
+frontend/.angular/*
+frontend/.angular/cache/*
+frontend/.angular/**
+
+# Compiled Angular build
+frontend/dist/
+frontend/out-tsc/
+
+# Backend build artifacts
+backend/node_modules/
+backend/dist/
+backend/npm-debug.log*
+backend/package-lock.json
+backend/yarn.lock
+
+# Docker artifacts
+docker/*.log
+docker/tmp/
+docker/volumes/
+*.pid
+*.seed
+*.tar
+
+# Local database or data dumps
+*.sqlite
+*.db
+*.sql
+*.dump
+
+# OS swap files
+*.swp
+*.swo
+
+# Test coverage and results
+coverage/
+test-output/
+reports/
+
+# Redis or cache dumps
+dump.rdb
+*.rdb
+
+# ===============================
+# Git Keep Exceptions
+# ===============================
+# Keep important configs and templates
+!docker/docker-compose.yml
+!docker/backend.Dockerfile
+!docker/frontend.Dockerfile
+!README.md
+!**/*.example
