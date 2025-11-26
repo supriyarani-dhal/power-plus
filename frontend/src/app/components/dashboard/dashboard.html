@@ -1,1 +1,67 @@
-<p>dashboard works!</p>
+<div class="flex h-screen bg-gray-900 text-white">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 border-r border-gray-700 p-5 flex flex-col">
+    <h1 class="text-xl font-bold mb-8">IoT Power Grid</h1>
+
+    <nav class="flex flex-col gap-4">
+      <a routerLink="/dashboard" class="nav-item">Dashboard</a>
+      <a routerLink="/region-overview" class="nav-item">Region Overview</a>
+      <a routerLink="/sensor-management" class="nav-item">Sensor Management</a>
+      <a routerLink="/alerts" class="nav-item">Alerts</a>
+    </nav>
+
+    <div class="mt-auto pt-5 border-t border-gray-700">
+      <button (click)="logout()" class="text-red-400 hover:text-red-300">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Section -->
+  <main class="flex-1 p-6 overflow-auto">
+
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-semibold">Dashboard</h2>
+
+      <div class="text-gray-400 text-sm">
+        Logged in as <span class="text-indigo-400">{{ userEmail }}</span>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+
+      <div class="card">
+        <p class="text-sm text-gray-400">Active Sensors</p>
+        <h3 class="text-3xl font-bold">{{ activeSensors }}</h3>
+      </div>
+
+      <div class="card">
+        <p class="text-sm text-gray-400">Regions</p>
+        <h3 class="text-3xl font-bold">{{ regionCount }}</h3>
+      </div>
+
+      <div class="card">
+        <p class="text-sm text-gray-400">Active Alerts</p>
+        <h3 class="text-3xl font-bold">{{ alertCount }}</h3>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+
+      <div class="chart-container">
+        <h3 class="chart-title">Power Consumption</h3>
+        <div id="powerChart" class="chart-box"></div>
+      </div>
+
+      <div class="chart-container">
+        <h3 class="chart-title">Sensor Health</h3>
+        <div id="sensorHealthChart" class="chart-box"></div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
