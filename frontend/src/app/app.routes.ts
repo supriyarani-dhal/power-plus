@@ -7,14 +7,21 @@ import { Alerts } from './components/alerts/alerts';
 import { SensorManagement } from './components/sensor-management/sensor-management';
 import { loginGuard } from './guards/login-guard';
 import { authGuard } from './guards/auth-guard';
+import { Layout } from './components/layout/layout';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: Login, canActivate: [loginGuard] },
-  { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
-  { path: 'regions', component: RegionOverview, canActivate: [authGuard] },
-  { path: 'region/:id', component: SensorDetails, canActivate: [authGuard] },
-  { path: 'alerts', component: Alerts, canActivate: [authGuard] },
-  { path: 'sensors/manage', component: SensorManagement, canActivate: [authGuard] },
+  {
+    path: '',
+    component: Layout,     // <--- makes the sidebar persistent
+    children: [
+      { path: 'dashboard', component: Dashboard },
+      { path: 'regions', component: RegionOverview },
+      { path: 'region/:id', component: SensorDetails },
+      { path: 'alerts', component: Alerts },
+      { path: 'sensors', component: SensorManagement },
+    ]
+  },
   { path: '**', redirectTo: '/login' }
 ];

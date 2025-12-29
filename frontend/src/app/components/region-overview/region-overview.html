@@ -1,1 +1,148 @@
-<p>region-overview works!</p>
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-semibold">Region Overview</h2>
+
+    <div class="text-gray-400 text-sm">
+      Logged in as <span class="text-indigo-400">{{ userEmail }}</span>
+    </div>
+  </div>
+
+  <div class="bg-gray-800 p-5 rounded-lg border border-gray-700">
+    <!-- Region Selector -->
+    <div class="mb-4">
+      <label class="text-gray-300 text-sm">Select Region</label>
+      <select
+        class="w-full mt-2 p-2 bg-gray-700 text-gray-200 rounded border border-gray-600"
+        [(ngModel)]="selectedRegionCode"
+        (change)="onRegionChange()"
+      >
+        @for (r of regions; track r.code) {
+        <option [value]="r.code">
+          {{ r.name }}
+        </option>
+        }
+      </select>
+    </div>
+
+    <!-- Place selector -->
+    @if (selectedRegion) {
+    <div>
+      <label class="text-gray-300 text-sm">Select Places in {{ selectedRegion.name }}</label>
+      <select
+        class="w-full mt-2 p-2 bg-gray-700 text-gray-200 rounded border border-gray-600"
+        [(ngModel)]="selectedPlaceName"
+        (change)="onPlaceChange()"
+      >
+        @for (place of selectedRegion.places; track place.name) {
+        <option [value]="place.name">
+          {{ place.name }} ({{ place.gridType === 'standalone' ? 'Standalone Grid' : 'Central Grid' }})
+        </option>
+        }
+      </select>
+    </div>
+    }
+  </div>
+
+  <!-- Summary Cards -->
+  @if (selectedPlace) {
+  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Devices</p>
+      <h3 class="text-3xl font-bold">{{ summary.devices }}</h3>
+    </div>
+
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Sensors</p>
+      <h3 class="text-3xl font-bold">{{ summary.sensors }}</h3>
+    </div>
+
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Active Sensors</p>
+      <h3 class="text-3xl font-bold text-green-400">{{ summary.activeSensors }}</h3>
+    </div>
+
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Offline Sensors</p>
+      <h3 class="text-3xl font-bold text-red-400">{{ summary.offlineSensors }}</h3>
+    </div>
+
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Alerts</p>
+      <h3 class="text-3xl font-bold text-yellow-400">{{ summary.alerts }}</h3>
+    </div>
+  </div>
+  }
+
+  <!-- Layout: Devices + Alerts -->
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <!-- Devices Table (Left 2 columns) -->
+    <div class="xl:col-span-2 bg-gray-800 p-5 rounded-lg border border-gray-700">
+      <h3 class="text-lg font-semibold mb-4 text-gray-300">Devices in {{ selectedPlace.name }}</h3>
+
+      <table class="w-full text-gray-300">
+        <thead class="text-sm text-gray-400 border-b border-gray-700">
+          <tr class="text-left">
+            <th class="py-2">Device</th>
+            <th>Status</th>
+            <th>Sensors</th>
+            <th>Last Update</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (d of devices; track d) {
+          <tr class="border-b border-gray-700">
+            <td class="py-3">{{ d.name }}</td>
+            <td>
+              <span
+                class="px-2 py-1 text-xs rounded-full"
+                [class.bg-green-600]="d.status === 'online'"
+                [class.bg-red-600]="d.status === 'offline'"
+              >
+                {{ d.status }}
+              </span>
+            </td>
+            <td>{{ d.sensorCount }}</td>
+            <td class="text-sm text-gray-500">{{ d.updatedAt }}</td>
+            <td>
+              <button
+                class="bg-indigo-600 hover:bg-indigo-500 px-3 py-1 text-sm rounded"
+                [routerLink]="['/region', d.id]"
+              >
+                View
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Alerts -->
+    <div class="bg-gray-800 p-5 rounded-lg border border-gray-700">
+      <h3 class="text-lg font-semibold mb-4 text-gray-300">Alerts</h3>
+
+      <ul class="space-y-3">
+        @for (a of alerts; track a) {
+        <li class="text-sm">
+          <span
+            [class.text-red-400]="a.type === 'critical'"
+            [class.text-yellow-400]="a.type === 'warning'"
+            [class.text-blue-400]="a.type === 'info'"
+          >
+            ●
+          </span>
+          <span class="text-gray-300 ml-2">{{ a.message }}</span>
+          <div class="text-gray-500 text-xs ml-6">{{ a.time }}</div>
+        </li>
+        }
+      </ul>
+
+      @if (alerts.length === 0) {
+      <div class="text-gray-500 text-sm">No alerts in this region.</div>
+      }
+    </div>
+  </div>
+</div>

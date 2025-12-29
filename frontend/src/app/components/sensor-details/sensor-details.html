@@ -1,1 +1,123 @@
-<p>sensor-details works!</p>
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h2 class="text-2xl font-semibold text-gray-200">
+        {{ sensor.name }}
+      </h2>
+      <p class="text-sm text-gray-400">
+        {{ sensor.deviceName }} • {{ sensor.place }}
+      </p>
+    </div>
+
+    <span
+      class="px-3 py-1 text-sm rounded-full"
+      [class.bg-green-600]="sensor.status === 'online'"
+      [class.bg-red-600]="sensor.status === 'offline'"
+    >
+      {{ sensor.status }}
+    </span>
+  </div>
+
+  <!-- Latest Reading -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Latest Reading</p>
+      <h3 class="text-3xl font-bold text-indigo-400">
+        {{ latestReading.value }} {{ sensor.unit }}
+      </h3>
+      <p class="text-xs text-gray-500 mt-1">
+        Updated {{ latestReading.timestamp }}
+      </p>
+    </div>
+
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Sensor ID</p>
+      <h3 class="text-lg font-semibold">{{ sensor.id }}</h3>
+    </div>
+
+    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
+      <p class="text-sm text-gray-400">Installed On</p>
+      <h3 class="text-lg font-semibold">{{ sensor.installedOn }}</h3>
+    </div>
+  </div>
+
+  <!-- Sensor Metadata -->
+  <div class="bg-gray-800 p-5 rounded-lg border border-gray-700">
+    <h3 class="text-lg font-semibold mb-3 text-gray-300">Sensor Information</h3>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+      <div>
+        <p class="text-gray-400">Region</p>
+        <p>{{ sensor.region }}</p>
+      </div>
+      <div>
+        <p class="text-gray-400">Place</p>
+        <p>{{ sensor.place }}</p>
+      </div>
+      <div>
+        <p class="text-gray-400">Device</p>
+        <p>{{ sensor.deviceName }}</p>
+      </div>
+      <div>
+        <p class="text-gray-400">Unit</p>
+        <p>{{ sensor.unit }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historical Data -->
+  <div class="bg-gray-800 p-5 rounded-lg border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4 text-gray-300">
+      Historical Readings
+    </h3>
+
+    <table class="w-full text-gray-300">
+      <thead class="text-sm text-gray-400 border-b border-gray-700">
+        <tr>
+          <th class="py-2 text-left">Time</th>
+          <th class="text-left">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (h of history; track h.time) {
+        <tr class="border-b border-gray-700">
+          <td class="py-2">{{ h.time }}</td>
+          <td>{{ h.value }} {{ sensor.unit }}</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Alerts -->
+  <div class="bg-gray-800 p-5 rounded-lg border border-gray-700">
+    <h3 class="text-lg font-semibold mb-4 text-gray-300">
+      Sensor Alerts
+    </h3>
+
+    @if (alerts.length > 0) {
+      <ul class="space-y-3">
+        @for (a of alerts; track a.time) {
+        <li>
+          <span
+            [class.text-red-400]="a.type === 'critical'"
+            [class.text-yellow-400]="a.type === 'warning'"
+            [class.text-blue-400]="a.type === 'info'"
+          >
+            ●
+          </span>
+          <span class="ml-2">{{ a.message }}</span>
+          <div class="text-xs text-gray-500 ml-6">
+            {{ a.time }}
+          </div>
+        </li>
+        }
+      </ul>
+    } @else {
+      <p class="text-sm text-gray-500">No alerts for this sensor.</p>
+    }
+  </div>
+
+</div>

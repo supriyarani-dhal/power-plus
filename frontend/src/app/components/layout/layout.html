@@ -1,0 +1,41 @@
+<div class="flex h-screen bg-gray-900 text-white">
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 border-r border-gray-700 p-5 flex flex-col">
+    <h1 class="text-xl font-bold mb-8">IoT Power Grid</h1>
+
+    <nav class="flex flex-col gap-4">
+      <div class="flex gap-2">
+        <fa-icon [icon]="faChartLine" class="nav-icon"></fa-icon>
+        <a routerLink="/dashboard" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer"
+          >Dashboard</a
+        >
+      </div>
+      <div class="flex gap-2">
+        <fa-icon [icon]="faChartArea" class="nav-icon"></fa-icon>
+        <a routerLink="/regions" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer"
+          >Region Overview</a
+        >
+      </div>
+      <div class="flex gap-2">
+        <fa-icon fa-icon [icon]="faBroadcastTower" class="nav-icon"></fa-icon>
+        <a routerLink="/sensors" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer"
+          >Sensor Management</a
+        >
+      </div>
+      <div class="flex gap-2">
+        <fa-icon [icon]="faBell" class="nav-icon"></fa-icon>
+        <a routerLink="/alerts" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer">Alerts</a>
+      </div>
+    </nav>
+
+    <div class="mt-auto pt-5 border-t border-gray-700">
+      <fa-icon [icon]="faArrowRightFromBracket" class="nav-icon"></fa-icon>
+      <button (click)="logout()" class="text-red-400 hover:text-red-300 ml-2">Logout</button>
+    </div>
+  </aside>
+
+  <!-- Main Section -->
+  <main class="flex-1 p-6 overflow-auto">
+    <router-outlet />
+  </main>
+</div>
