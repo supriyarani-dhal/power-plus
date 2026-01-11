@@ -1,4 +1,19 @@
-.active {
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #d1d5db; /* text-gray-300 */
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem; /* rounded-md */
+  transition: background-color 0.3s, color 0.3s;
+  cursor: pointer;
+}
+
+.nav-item:hover {
   color: white;
-  font-weight: 600;
+}
+
+.nav-item.active {
+  background-color: #374151; /* bg-gray-700 */
+  color: white;
 }

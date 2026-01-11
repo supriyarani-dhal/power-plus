@@ -3,34 +3,66 @@
   <aside class="w-64 bg-gray-800 border-r border-gray-700 p-5 flex flex-col">
     <h1 class="text-xl font-bold mb-8">IoT Power Grid</h1>
 
-    <nav class="flex flex-col gap-4">
-      <div class="flex gap-2">
-        <fa-icon [icon]="faChartLine" class="nav-icon"></fa-icon>
-        <a routerLink="/dashboard" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer"
-          >Dashboard</a
-        >
-      </div>
-      <div class="flex gap-2">
-        <fa-icon [icon]="faChartArea" class="nav-icon"></fa-icon>
-        <a routerLink="/regions" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer"
-          >Region Overview</a
-        >
-      </div>
-      <div class="flex gap-2">
-        <fa-icon fa-icon [icon]="faBroadcastTower" class="nav-icon"></fa-icon>
-        <a routerLink="/sensors" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer"
-          >Sensor Management</a
-        >
-      </div>
-      <div class="flex gap-2">
-        <fa-icon [icon]="faBell" class="nav-icon"></fa-icon>
-        <a routerLink="/alerts" routerLinkActive="active" class="block text-gray-300 hover:text-white hover:cursor-pointer">Alerts</a>
-      </div>
-    </nav>
+    <!-- MONITORING -->
+    <div class="mb-6">
+      <p class="text-xs text-gray-500 uppercase mb-3 tracking-wider">Monitoring</p>
 
+      <nav class="flex flex-col gap-3">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faChartLine"></fa-icon>
+          Dashboard
+        </a>
+
+        <a routerLink="/regions" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faChartArea"></fa-icon>
+          Region Overview
+        </a>
+
+        <a routerLink="/sensors" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faBroadcastTower"></fa-icon>
+          Sensor Management
+        </a>
+
+        <a routerLink="/alerts" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faBell"></fa-icon>
+          Alerts
+        </a>
+      </nav>
+    </div>
+
+    <!-- MANAGEMENT -->
+    <div class="mb-6">
+      <p class="text-xs text-gray-500 uppercase mb-3 tracking-wider">Management</p>
+
+      <nav class="flex flex-col gap-3">
+        <a routerLink="/devices/add" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faPlusCircle"></fa-icon>
+          Add Device
+        </a>
+
+        <a routerLink="/devices/manage" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faServer"></fa-icon>
+          Manage Devices
+        </a>
+
+        <a routerLink="/sensors/add" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faMicrochip"></fa-icon>
+          Add Sensor
+        </a>
+
+        <a routerLink="/sensors/manage" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faSliders"></fa-icon>
+          Manage Sensors
+        </a>
+      </nav>
+    </div>
+
+    <!-- ACCOUNT -->
     <div class="mt-auto pt-5 border-t border-gray-700">
-      <fa-icon [icon]="faArrowRightFromBracket" class="nav-icon"></fa-icon>
-      <button (click)="logout()" class="text-red-400 hover:text-red-300 ml-2">Logout</button>
+      <button (click)="logout()" class="flex items-center gap-2 text-red-400 hover:text-red-300">
+        <fa-icon [icon]="faArrowRightFromBracket"></fa-icon>
+        Logout
+      </button>
     </div>
   </aside>
 

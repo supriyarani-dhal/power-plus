@@ -8,20 +8,28 @@ import { SensorManagement } from './components/sensor-management/sensor-manageme
 import { loginGuard } from './guards/login-guard';
 import { authGuard } from './guards/auth-guard';
 import { Layout } from './components/layout/layout';
+import { AddDevice } from './components/add-device/add-device';
+import { ManageSensor } from './components/manage-sensor/manage-sensor';
+import { AddSensor } from './components/add-sensor/add-sensor';
+import { ManageDevice } from './components/manage-device/manage-device';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: Login, canActivate: [loginGuard] },
   {
     path: '',
-    component: Layout,     // <--- makes the sidebar persistent
+    component: Layout, // <--- makes the sidebar persistent
     children: [
       { path: 'dashboard', component: Dashboard },
       { path: 'regions', component: RegionOverview },
-      { path: 'region/:id', component: SensorDetails },
+      { path: 'sensor/:id', component: SensorDetails },
       { path: 'alerts', component: Alerts },
       { path: 'sensors', component: SensorManagement },
-    ]
+      { path: 'devices/add', component: AddDevice },
+      { path: 'devices/manage', component: ManageDevice },
+      { path: 'sensors/add', component: AddSensor },
+      { path: 'sensors/manage', component: ManageSensor },
+    ],
   },
-  { path: '**', redirectTo: '/login' }
+  { path: '**', redirectTo: '/login' },
 ];

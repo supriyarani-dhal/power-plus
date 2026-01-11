@@ -1,1 +1,91 @@
-<p>alerts works!</p>
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-semibold">Alerts</h2>
+
+    <div class="text-gray-400 text-sm">
+      Logged in as <span class="text-indigo-400">{{ userEmail }}</span>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="bg-gray-800 border border-gray-700 rounded-lg p-4 flex justify-between gap-4">
+    <div>
+      <!-- Severity -->
+      <select [(ngModel)]="selectedSeverity" class="filter">
+        <option value="">All Severities</option>
+        <option value="critical">Critical</option>
+        <option value="warning">Warning</option>
+        <option value="info">Info</option>
+      </select>
+
+      <!-- Region -->
+      <select [(ngModel)]="selectedRegion" class="filter">
+        <option value="">All Regions</option>
+        <option>Northern Region</option>
+        <option>Southern Region</option>
+        <option>North Eastern Region</option>
+      </select>
+    </div>
+
+    <input
+      type="text"
+      placeholder="Search alerts..."
+      [(ngModel)]="searchText"
+      class="bg-gray-800 border border-gray-700 rounded px-4 py-2 text-sm text-gray-300 focus:outline-none"
+    />
+  </div>
+
+  <!-- Alerts Table -->
+  <div class="bg-gray-800 border border-gray-700 rounded-lg overflow-hidden">
+    <table class="w-full text-gray-300">
+      <thead class="bg-gray-900 text-sm text-gray-400">
+        <tr class="text-left">
+          <th class="px-4 py-3">Severity</th>
+          <th>Message</th>
+          <th>Region</th>
+          <th>Place</th>
+          <th>Device</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (a of filteredAlerts; track a.id) {
+        <tr class="border-t border-gray-700 hover:bg-gray-700/40 transition">
+          <!-- Severity -->
+          <td class="px-4 py-3">
+            <span
+              class="px-2 py-1 text-xs rounded-full font-semibold"
+              [class.bg-red-600]="a.level === 'critical'"
+              [class.bg-yellow-500]="a.level === 'warning'"
+              [class.bg-blue-600]="a.level === 'info'"
+            >
+              {{ a.level }}
+            </span>
+          </td>
+
+          <!-- Message -->
+          <td class="font-medium">{{ a.message }}</td>
+
+          <!-- Region -->
+          <td>{{ a.region }}</td>
+
+          <!-- Place -->
+          <td>{{ a.place }}</td>
+
+          <!-- Device -->
+          <td>{{ a.device }}</td>
+
+          <!-- Time -->
+          <td class="text-sm text-gray-400">{{ a.time }}</td>
+        </tr>
+        } @if (filteredAlerts.length === 0) {
+        <tr>
+          <td colspan="6" class="text-center text-gray-500 py-6">No alerts found</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
