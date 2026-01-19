@@ -8,7 +8,7 @@
     </div>
   </div>
 
-  <div class="bg-gray-800 p-5 rounded-lg border border-gray-700">
+  <div class="bg-gray-800 p-5 rounded-lg border border-gray-700 mb-6">
     <!-- Region Selector -->
     <div class="mb-4">
       <label class="text-gray-300 text-sm">Select Region</label>
@@ -24,125 +24,171 @@
         }
       </select>
     </div>
+  </div>
 
-    <!-- Place selector -->
-    @if (selectedRegion) {
+  <!-- Layout: Devices + Alerts -->
+  <!-- ============================= -->
+  <!-- REGION OVERVIEW PAGE -->
+  <!-- ============================= -->
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-8">
     <div>
-      <label class="text-gray-300 text-sm">Select Places in {{ selectedRegion.name }}</label>
-      <select
-        class="w-full mt-2 p-2 bg-gray-700 text-gray-200 rounded border border-gray-600"
-        [(ngModel)]="selectedPlaceName"
-        (change)="onPlaceChange()"
-      >
-        @for (place of selectedRegion.places; track place.name) {
-        <option [value]="place.name">
-          {{ place.name }} ({{ place.gridType === 'standalone' ? 'Standalone Grid' : 'Central Grid' }})
-        </option>
-        }
-      </select>
+      <h2 class="text-2xl font-semibold text-gray-200">
+        {{ selectedRegion.name }}
+      </h2>
+      <p class="text-sm text-gray-400">
+        Regional grid health, sensor reliability & operational risks
+      </p>
+    </div>
+
+    <!-- Region Health Badge -->
+    <span
+      class="px-4 py-1 rounded-full text-sm font-semibold"
+      [class.bg-green-600]="regionHealth === 'good'"
+      [class.bg-yellow-600]="regionHealth === 'warning'"
+      [class.bg-red-600]="regionHealth === 'critical'"
+    >
+      {{ regionHealth | uppercase }}
+    </span>
+  </div>
+
+  <!-- ============================= -->
+  <!-- PLACE HEALTH CARDS -->
+  <!-- ============================= -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
+    @for (p of selectedRegion.places; track p.name) {
+    <div
+      class="bg-gray-800 border border-gray-700 rounded-lg p-5 cursor-pointer hover:border-indigo-500 transition"
+      (click)="navigateToSensors(p)"
+    >
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-lg font-medium text-gray-200">
+          {{ p.name }}
+        </h3>
+
+        <!-- Health Dot -->
+        <span
+          class="w-3 h-3 rounded-full"
+          [class.bg-green-400]="p.health === 'good'"
+          [class.bg-yellow-400]="p.health === 'warning'"
+          [class.bg-red-400]="p.health === 'critical'"
+        ></span>
+      </div>
+
+      <div class="space-y-1 text-sm text-gray-400">
+        <div>
+          Sensors:
+          <span class="text-gray-200"> {{ p.activeSensors }}/{{ p.totalSensors }} </span>
+        </div>
+
+        <div>
+          Offline:
+          <span class="text-red-400 font-medium">
+            {{ p.offlineSensors }}
+          </span>
+        </div>
+
+        <div>
+          Alerts:
+          <span class="text-yellow-400 font-medium">
+            {{ p.alertCount }}
+          </span>
+        </div>
+
+        <div class="text-xs text-gray-500 mt-2">
+          {{ p.gridType === 'standalone' ? 'Standalone Grid' : 'Central Grid' }}
+        </div>
+      </div>
     </div>
     }
   </div>
 
-  <!-- Summary Cards -->
-  @if (selectedPlace) {
-  <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
-    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-      <p class="text-sm text-gray-400">Devices</p>
-      <h3 class="text-3xl font-bold">{{ summary.devices }}</h3>
+  <!-- ============================= -->
+  <!-- SENSOR RELIABILITY + LOAD RISK -->
+  <!-- ============================= -->
+  <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-10">
+    <!-- Sensor Reliability -->
+    <div class="bg-gray-800 border border-gray-700 rounded-lg p-5">
+      <h3 class="text-lg font-semibold mb-4 text-gray-300">Sensor Reliability</h3>
+
+      <div class="space-y-5">
+        <!-- Healthy -->
+        <div>
+          <div class="flex justify-between text-sm text-gray-400 mb-1">
+            <span>Healthy Sensors</span>
+            <span>{{ healthyPercent }}%</span>
+          </div>
+          <div class="h-2 bg-gray-700 rounded">
+            <div class="h-2 bg-green-500 rounded" [style.width.%]="healthyPercent"></div>
+          </div>
+        </div>
+
+        <!-- Flapping -->
+        <div>
+          <div class="flex justify-between text-sm text-gray-400 mb-1">
+            <span>Unstable / Flapping</span>
+            <span>{{ flappingPercent }}%</span>
+          </div>
+          <div class="h-2 bg-gray-700 rounded">
+            <div class="h-2 bg-yellow-500 rounded" [style.width.%]="flappingPercent"></div>
+          </div>
+        </div>
+
+        <!-- Offline -->
+        <div>
+          <div class="flex justify-between text-sm text-gray-400 mb-1">
+            <span>Offline</span>
+            <span>{{ offlinePercent }}%</span>
+          </div>
+          <div class="h-2 bg-gray-700 rounded">
+            <div class="h-2 bg-red-500 rounded" [style.width.%]="offlinePercent"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-      <p class="text-sm text-gray-400">Sensors</p>
-      <h3 class="text-3xl font-bold">{{ summary.sensors }}</h3>
-    </div>
-
-    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-      <p class="text-sm text-gray-400">Active Sensors</p>
-      <h3 class="text-3xl font-bold text-green-400">{{ summary.activeSensors }}</h3>
-    </div>
-
-    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-      <p class="text-sm text-gray-400">Offline Sensors</p>
-      <h3 class="text-3xl font-bold text-red-400">{{ summary.offlineSensors }}</h3>
-    </div>
-
-    <div class="bg-gray-800 p-4 rounded-lg border border-gray-700">
-      <p class="text-sm text-gray-400">Alerts</p>
-      <h3 class="text-3xl font-bold text-yellow-400">{{ summary.alerts }}</h3>
-    </div>
-  </div>
-  }
-
-  <!-- Layout: Devices + Alerts -->
-  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-    <!-- Devices Table (Left 2 columns) -->
-    <div class="xl:col-span-2 bg-gray-800 p-5 rounded-lg border border-gray-700">
-      <h3 class="text-lg font-semibold mb-4 text-gray-300">Devices in {{ selectedPlace.name }}</h3>
-
-      <table class="w-full text-gray-300">
-        <thead class="text-sm text-gray-400 border-b border-gray-700">
-          <tr class="text-left">
-            <th class="py-2">Device</th>
-            <th>Status</th>
-            <th>Sensors</th>
-            <th>Last Update</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          @for (d of devices; track d) {
-          <tr class="border-b border-gray-700">
-            <td class="py-3">{{ d.name }}</td>
-            <td>
-              <span
-                class="px-2 py-1 text-xs rounded-full"
-                [class.bg-green-600]="d.status === 'online'"
-                [class.bg-red-600]="d.status === 'offline'"
-              >
-                {{ d.status }}
-              </span>
-            </td>
-            <td>{{ d.sensorCount }}</td>
-            <td class="text-sm text-gray-500">{{ d.updatedAt }}</td>
-            <td>
-              <button
-                class="bg-indigo-600 hover:bg-indigo-500 px-3 py-1 text-sm rounded"
-                [routerLink]="['/sensors', d.id]"
-              >
-                View
-              </button>
-            </td>
-          </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Alerts -->
-    <div class="bg-gray-800 p-5 rounded-lg border border-gray-700">
-      <h3 class="text-lg font-semibold mb-4 text-gray-300">Alerts</h3>
+    <!-- Load Risk Forecast -->
+    <div class="bg-gray-800 border border-gray-700 rounded-lg p-5">
+      <h3 class="text-lg font-semibold mb-4 text-gray-300">Load Risk Forecast</h3>
 
       <ul class="space-y-3">
-        @for (a of alerts; track a) {
-        <li class="text-sm">
+        @for (l of loadRisks; track l.place) {
+        <li class="flex justify-between items-center text-sm">
+          <span class="text-gray-300">{{ l.place }}</span>
+
           <span
-            [class.text-red-400]="a.type === 'critical'"
-            [class.text-yellow-400]="a.type === 'warning'"
-            [class.text-blue-400]="a.type === 'info'"
+            class="font-semibold"
+            [class.text-green-400]="l.risk === 'low'"
+            [class.text-yellow-400]="l.risk === 'medium'"
+            [class.text-red-400]="l.risk === 'high'"
           >
-            ●
+            {{ l.risk | uppercase }}
           </span>
-          <span class="text-gray-300 ml-2">{{ a.message }}</span>
-          <div class="text-gray-500 text-xs ml-6">{{ a.time }}</div>
         </li>
         }
       </ul>
-
-      @if (alerts.length === 0) {
-      <div class="text-gray-500 text-sm">No alerts in this region.</div>
-      }
     </div>
+  </div>
+
+  <!-- ============================= -->
+  <!-- DATA QUALITY & GRID ISSUES -->
+  <!-- ============================= -->
+  <div class="bg-gray-800 border border-gray-700 rounded-lg p-5">
+    <h3 class="text-lg font-semibold mb-4 text-gray-300">Data Quality & Grid Issues</h3>
+
+    <ul class="space-y-3">
+      @for (i of dataIssues; track i) {
+      <li class="text-sm">
+        <span class="text-yellow-400">●</span>
+        <span class="ml-2 text-gray-300">
+          {{ i.message }}
+        </span>
+        <div class="text-xs text-gray-500 ml-5">{{ i.place }} • {{ i.time }}</div>
+      </li>
+      } @if (dataIssues.length === 0) {
+      <li class="text-sm text-gray-400">No data quality or grid issues detected.</li>
+      }
+    </ul>
   </div>
 </div>

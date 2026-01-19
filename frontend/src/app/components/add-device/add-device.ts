@@ -7,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './add-device.scss',
 })
 export class AddDevice {
+  showDeleteModal = false;
 
+  closeDelete() {
+    this.showDeleteModal = false;
+  }
 }

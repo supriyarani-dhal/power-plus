@@ -7,5 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './add-sensor.scss',
 })
 export class AddSensor {
+  showDeleteModal = false;
 
+  closeDelete() {
+    this.showDeleteModal = false;
+  }
 }

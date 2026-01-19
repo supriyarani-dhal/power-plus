@@ -1,3 +1,4 @@
+import { UpperCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -5,12 +6,13 @@ import { Router, RouterLink } from '@angular/router';
 @Component({
   standalone: true,
   selector: 'app-region-overview',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, UpperCasePipe],
   templateUrl: './region-overview.html',
   styleUrl: './region-overview.scss'
 })
 export class RegionOverview {
   userEmail: string = '';
+  router = new Router();
 
   regions = [
     { code: 'NR', name: 'Northern Region' },
@@ -25,16 +27,17 @@ export class RegionOverview {
   selectedRegion: any;
   selectedPlace: any;
 
-  summary = {
-    devices: 0,
-    sensors: 0,
-    activeSensors: 0,
-    offlineSensors: 0,
-    alerts: 0
-  };
-
   devices: any[] = [];
   alerts: any[] = [];
+
+  regionHealth: 'good' | 'warning' | 'critical' = 'good';
+
+  healthyPercent = 0;
+  flappingPercent = 0;
+  offlinePercent = 0;
+
+  loadRisks: any[] = [];
+  dataIssues: any[] = [];
 
   regionData = [
   // =======================
@@ -49,8 +52,8 @@ export class RegionOverview {
         gridType: 'central',
         summary: { devices: 6, sensors: 28, activeSensors: 25, offlineSensors: 3, alerts: 1 },
         devices: [
-          { name: 'Substation CH-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 15 },
-          { name: 'Feeder CH-02', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 10 }
+          { name: 'Substation CH-01', status: 'online', type: 'Substation', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 15 },
+          { name: 'Feeder CH-02', status: 'online', type: 'Feeder', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 10 }
         ],
         alerts: [{ type: 'warning', message: 'Voltage fluctuation detected', time: '12 min ago' }]
       },
@@ -59,8 +62,8 @@ export class RegionOverview {
         gridType: 'central',
         summary: { devices: 14, sensors: 62, activeSensors: 55, offlineSensors: 7, alerts: 3 },
         devices: [
-          { name: 'Transformer DL-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 20 },
-          { name: 'Feeder DL-02', status: 'offline', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 15 }
+          { name: 'Transformer DL-01', status: 'online', type: 'Transformer', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 20 },
+          { name: 'Feeder DL-02', status: 'offline', type: 'Feeder', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 15 }
         ],
         alerts: [
           { type: 'critical', message: 'Overload warning on main feeder', time: '1 min ago' },
@@ -72,56 +75,56 @@ export class RegionOverview {
         name: 'Haryana',
         gridType: 'central',
         summary: { devices: 10, sensors: 45, activeSensors: 40, offlineSensors: 5, alerts: 2 },
-        devices: [{ name: 'Grid HR-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
+        devices: [{ name: 'Grid HR-01', status: 'online', type: 'Grid', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
         alerts: [{ type: 'warning', message: 'Load nearing peak limit', time: '15 min ago' }]
       },
       {
         name: 'Himachal Pradesh',
         gridType: 'central',
         summary: { devices: 7, sensors: 32, activeSensors: 30, offlineSensors: 2, alerts: 1 },
-        devices: [{ name: 'Hydro HP-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
+        devices: [{ name: 'Hydro HP-01', status: 'online', type: 'Hydro', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
         alerts: [{ type: 'info', message: 'Hydro output stable', time: '25 min ago' }]
       },
       {
         name: 'Jammu & Kashmir',
         gridType: 'central',
         summary: { devices: 5, sensors: 22, activeSensors: 20, offlineSensors: 2, alerts: 1 },
-        devices: [{ name: 'Hydro JK-01', status: 'offline', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
+        devices: [{ name: 'Hydro JK-01', status: 'offline', type: 'Hydro', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
         alerts: [{ type: 'critical', message: 'Transmission fault detected', time: '8 min ago' }]
       },
       {
         name: 'Ladakh',
         gridType: 'standalone',
         summary: { devices: 2, sensors: 8, activeSensors: 8, offlineSensors: 0, alerts: 0 },
-        devices: [{ name: 'Solar LD-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 8 }],
+        devices: [{ name: 'Solar LD-01', status: 'online', type: 'Solar', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 8 }],
         alerts: []
       },
       {
         name: 'Punjab',
         gridType: 'central',
         summary: { devices: 8, sensors: 36, activeSensors: 33, offlineSensors: 3, alerts: 1 },
-        devices: [{ name: 'Agri Grid PB-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
+        devices: [{ name: 'Agri Grid PB-01', status: 'online', type: 'Agri Grid', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
         alerts: [{ type: 'warning', message: 'High agricultural demand', time: '18 min ago' }]
       },
       {
         name: 'Rajasthan',
         gridType: 'central',
         summary: { devices: 9, sensors: 40, activeSensors: 38, offlineSensors: 2, alerts: 1 },
-        devices: [{ name: 'Solar RJ-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
+        devices: [{ name: 'Solar RJ-01', status: 'online', type: 'Solar', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
         alerts: [{ type: 'info', message: 'Solar output high', time: '30 min ago' }]
       },
       {
         name: 'Uttar Pradesh',
         gridType: 'central',
         summary: { devices: 16, sensors: 70, activeSensors: 60, offlineSensors: 10, alerts: 2 },
-        devices: [{ name: 'UP Main Grid', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 25 }],
+        devices: [{ name: 'UP Main Grid', status: 'online', type: 'Main Grid', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 25 }],
         alerts: [{ type: 'critical', message: 'Peak demand stress', time: '4 min ago' }]
       },
       {
         name: 'Uttarakhand',
         gridType: 'central',
         summary: { devices: 6, sensors: 25, activeSensors: 23, offlineSensors: 2, alerts: 1 },
-        devices: [{ name: 'Hydro UK-01', status: 'online', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
+        devices: [{ name: 'Hydro UK-01', status: 'online', type: 'Hydro', updatedAt: '2024-06-10T10:15:00Z', sensorCount: 12 }],
         alerts: [{ type: 'info', message: 'River flow stable', time: '40 min ago' }]
       }
     ]
@@ -284,31 +287,110 @@ export class RegionOverview {
     this.loadRegion();
   }
 
-  onPlaceChange() {
-    const place = this.selectedRegion.places.find((p:any) => p.name === this.selectedPlaceName);
-    if(place) {
-      this.loadPlace(place);
-    }
-  }
-
   loadRegion() {
     this.selectedRegion = this.regionData.find(
       r => r.code === this.selectedRegionCode
-    );
+    )
 
-    // Auto select first place
-    if (this.selectedRegion?.places?.length) {
-      this.selectedPlaceName = this.selectedRegion.places[0].name;
-      this.loadPlace(this.selectedRegion.places[0]);
-    }
+    this.calculateRegionHealth();
+    this.calculateSensorReliability();
+    this.buildLoadRisks();
+    this.buildDataIssues();
   }
 
-  loadPlace(place: any) {
-    this.selectedPlace = place;
-    this.summary = place.summary;
-    this.devices = place.devices;
-    this.alerts = place.alerts;
+  /** ===============================
+   *  REGION HEALTH LOGIC
+   *  =============================== */
+  calculateRegionHealth() {
+    let criticalAlerts = 0;
+    let offlineSensors = 0;
+
+    this.selectedRegion.places.forEach((p: any) => {
+      criticalAlerts += p.alerts.filter((a: any) => a.type === 'critical').length;
+      offlineSensors += p.summary.offlineSensors;
+
+      // Attach health to place (used by UI)
+      p.health =
+        p.summary.offlineSensors > 5 || p.alerts.some((a: any) => a.type === 'critical')
+          ? 'critical'
+          : p.alerts.length > 0
+          ? 'warning'
+          : 'good';
+
+      p.totalSensors = p.summary.sensors;
+      p.activeSensors = p.summary.activeSensors;
+      p.offlineSensors = p.summary.offlineSensors;
+      p.alertCount = p.alerts.length;
+    });
+
+    this.regionHealth =
+      criticalAlerts > 3 || offlineSensors > 15
+        ? 'critical'
+        : criticalAlerts > 0
+        ? 'warning'
+        : 'good';
+  }
+
+  /** ===============================
+   *  SENSOR RELIABILITY
+   *  =============================== */
+  calculateSensorReliability() {
+    let total = 0;
+    let active = 0;
+    let offline = 0;
+
+    this.selectedRegion.places.forEach((p: any) => {
+      total += p.summary.sensors;
+      active += p.summary.activeSensors;
+      offline += p.summary.offlineSensors;
+    });
+
+    this.healthyPercent = Math.round((active / total) * 100);
+    this.offlinePercent = Math.round((offline / total) * 100);
+    this.flappingPercent = 100 - this.healthyPercent - this.offlinePercent;
+  }
+
+  /** ===============================
+   *  LOAD RISK FORECAST
+   *  =============================== */
+  buildLoadRisks() {
+    this.loadRisks = this.selectedRegion.places.map((p: any) => ({
+      place: p.name,
+      risk:
+        p.summary.alerts > 2
+          ? 'high'
+          : p.summary.alerts > 0
+          ? 'medium'
+          : 'low'
+    }));
+  }
+
+  /** ===============================
+   *  DATA QUALITY / GRID ISSUES
+   *  =============================== */
+  buildDataIssues() {
+    this.dataIssues = [];
+
+    this.selectedRegion.places.forEach((p: any) => {
+      p.alerts.forEach((a: any) => {
+        this.dataIssues.push({
+          place: p.name,
+          message: a.message,
+          time: a.time
+        });
+      });
+    });
+  }
+
+  /** ===============================
+   *  NAVIGATION
+   *  =============================== */
+  navigateToSensors(place: any) {
+    this.router.navigate(['/sensors'], {
+      queryParams: {
+        region: this.selectedRegion.name,
+        place: place.name
+      }
+    });
   }
 }
-
-

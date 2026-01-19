@@ -9,7 +9,6 @@ import { loginGuard } from './guards/login-guard';
 import { authGuard } from './guards/auth-guard';
 import { Layout } from './components/layout/layout';
 import { AddDevice } from './components/add-device/add-device';
-import { ManageSensor } from './components/manage-sensor/manage-sensor';
 import { AddSensor } from './components/add-sensor/add-sensor';
 import { ManageDevice } from './components/manage-device/manage-device';
 
@@ -28,7 +27,6 @@ export const routes: Routes = [
       { path: 'devices/add', component: AddDevice },
       { path: 'devices/manage', component: ManageDevice },
       { path: 'sensors/add', component: AddSensor },
-      { path: 'sensors/manage', component: ManageSensor },
     ],
   },
   { path: '**', redirectTo: '/login' },

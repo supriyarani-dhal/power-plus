@@ -1,1 +1,140 @@
-<p>manage-device works!</p>
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-semibold">Device Management</h2>
+
+    <div class="text-gray-400 text-sm">
+      Logged in as <span class="text-indigo-400">{{ userEmail }}</span>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  @if (showFilters) {
+  <div class="flex flex-wrap gap-4 mb-6 items-end">
+    <!-- Region Filter -->
+    <select [(ngModel)]="selectedRegion" class="filter">
+      <option value="">All Regions</option>
+      <option>Northern Region</option>
+      <option>Southern Region</option>
+    </select>
+
+    <!-- Place Filter -->
+    <select [(ngModel)]="selectedPlace" class="filter">
+      <option value="">All Places</option>
+      <option>Chandigarh</option>
+      <option>Delhi</option>
+    </select>
+
+    <!-- Device Type Filter -->
+    <select [(ngModel)]="selectedDeviceType" class="filter">
+      <option value="">All Types</option>
+      <option>Substation</option>
+      <option>Feeder</option>
+    </select>
+
+    <!-- Status -->
+    <select [(ngModel)]="selectedStatus" class="filter">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="inactive">Inactive</option>
+    </select>
+  </div>
+  }
+
+  <div class="flex justify-between items-center mb-6">
+    <button
+      (click)="showFilters = !showFilters"
+      class="flex items-center gap-2 text-sm px-3 py-1.5 rounded bg-gray-700 hover:bg-gray-600 text-gray-200 border border-gray-600"
+    >
+      <span>{{ showFilters ? 'Hide Filters' : 'Show Filters' }}</span>
+      <span class="text-xs">{{ showFilters ? '▲' : '▼' }}</span>
+    </button>
+
+    <input
+      type="text"
+      [(ngModel)]="searchText"
+      placeholder="Search device name..."
+      class="ml-auto p-2 bg-gray-700 text-gray-200 rounded border border-gray-600"
+    />
+  </div>
+
+  <!-- Device Table -->
+  <div class="bg-gray-800 border border-gray-700 rounded-xl p-5 shadow-lg">
+    <div class="overflow-x-auto">
+      <table class="w-full text-gray-300 text-sm">
+        <!-- Header -->
+        <thead class="sticky top-0 bg-gray-800 z-10">
+          <tr class="text-left text-gray-400 border-b border-gray-700">
+            <th class="py-3 px-3">Device Name</th>
+            <th class="px-3">Type</th>
+            <th class="px-3">Status</th>
+            <th class="px-3">Location</th>
+            <th class="px-3 text-center">Enabled</th>
+            <th class="px-3">Region</th>
+            <th class="px-3 text-right">Action</th>
+          </tr>
+        </thead>
+
+        <!-- Body -->
+        <tbody>
+          @for (d of deviceManagementData; track d.id) {
+          <tr class="border-b border-gray-700 hover:bg-gray-700/40 transition-colors">
+            <!-- Device Name -->
+            <td class="py-4 px-3 font-medium text-gray-200">{{ d.name }}</td>
+
+            <!-- Type -->
+            <td class="px-3 capitalize">
+              <span class="px-2 py-1 rounded-md bg-gray-700 text-xs">{{ d.type }}</span>
+            </td>
+
+            <!-- Status -->
+            <td class="px-3">
+              <span
+                class="px-2 py-1 text-xs rounded-full font-semibold"
+                [class.bg-green-600]="d.status === 'active'"
+                [class.text-white]="d.status === 'active'"
+                [class.bg-gray-600]="d.status === 'inactive'"
+              >
+                {{ d.status }}
+              </span>
+            </td>
+
+            <!-- Location -->
+            <td class="px-3 text-gray-300">{{ d.location }}</td>
+
+            <!-- Enable Toggle -->
+            <td class="px-3 text-center">
+              <label class="inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  class="sr-only"
+                  [checked]="d.enabled"
+                  (change)="toggleDevice(d)"
+                />
+                <span
+                  class="relative w-10 h-5 bg-gray-600 rounded-full transition after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:w-4 after:h-4 after:rounded-full after:transition-all"
+                  [class.bg-indigo-600]="d.enabled"
+                  [class.after:translate-x-5]="d.enabled"
+                ></span>
+              </label>
+            </td>
+
+            <!-- Region -->
+            <td class="px-3 text-gray-400">{{ d.region }}</td>
+
+            <!-- Action -->
+            <td class="px-3 text-right">
+              <button
+                class="px-3 py-1.5 rounded-md text-xs font-medium bg-indigo-600 hover:bg-indigo-500 transition"
+                [routerLink]="['/device', d.id]"
+              >
+                View
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

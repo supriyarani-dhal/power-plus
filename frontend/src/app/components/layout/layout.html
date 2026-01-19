@@ -18,6 +18,11 @@
           Region Overview
         </a>
 
+        <a routerLink="/devices/manage" routerLinkActive="active" class="nav-item">
+          <fa-icon [icon]="faServer"></fa-icon>
+          Device Management
+        </a>
+
         <a routerLink="/sensors" routerLinkActive="active" class="nav-item">
           <fa-icon [icon]="faBroadcastTower"></fa-icon>
           Sensor Management
@@ -40,19 +45,9 @@
           Add Device
         </a>
 
-        <a routerLink="/devices/manage" routerLinkActive="active" class="nav-item">
-          <fa-icon [icon]="faServer"></fa-icon>
-          Manage Devices
-        </a>
-
         <a routerLink="/sensors/add" routerLinkActive="active" class="nav-item">
           <fa-icon [icon]="faMicrochip"></fa-icon>
           Add Sensor
-        </a>
-
-        <a routerLink="/sensors/manage" routerLinkActive="active" class="nav-item">
-          <fa-icon [icon]="faSliders"></fa-icon>
-          Manage Sensors
         </a>
       </nav>
     </div>
